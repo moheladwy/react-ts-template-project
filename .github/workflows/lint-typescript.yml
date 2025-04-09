@@ -1,0 +1,36 @@
+name: Client (Typescript) Linting 
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    name: Lint Client (Typescript)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Run ESLint
+        run: npm run lint -- --quiet
+
+      - name: Build application
+        run: npm run build
